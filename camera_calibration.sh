@@ -30,12 +30,12 @@ run_camera_calibration() {
 }
 
 
-rename_calibration_file() {
-    mv /home/$USER/.ros/camera_info/camera.yaml /home/$USER/.ros/camera_info/camera_calibration.yaml
+copy_calibration_file() {
+    cp /home/$USER/.ros/camera_info/camera.yaml /home/$USER/.ros/camera_info/camera_calibration.yaml
 }
 
 
-install_camera_calibration
-check_camera_topics
-run_camera_calibration
-rename_calibration_file
+# install_camera_calibration
+# check_camera_topics
+# run_camera_calibration
+copy_calibration_file
