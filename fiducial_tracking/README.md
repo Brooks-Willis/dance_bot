@@ -14,7 +14,7 @@ First we download the package that handles tracking multiple fiducials. The unde
 ```
 
 ## [gscam](http://wiki.ros.org/gscam)
-We have not included install scripts for gscam. See the official ROS [documentation](http://wiki.ros.org/gscam) for more details on how to get this running. When you run this, gscam will capture video from the device detailed in ```video_device.txt``` and publish it to the ROS topic ```camera/image_raw```. Keep this running for the rest of the setup process.
+We have not included install scripts for gscam. See the official ROS [documentation](http://wiki.ros.org/gscam) for more details on how install gscam. When you run ```run_gscam.sh```, gscam will capture video from the device detailed in ```video_device.txt``` and publish it to the ROS topic ```/camera/image_raw```. Keep this running for camera calibration.
 ```bash
 ./run_gscam.sh
 ```
