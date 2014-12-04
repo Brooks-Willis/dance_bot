@@ -2,8 +2,8 @@
 
 
 launch_gscam() {
-    video_device=$1
-    export GSCAM_CONFIG="v4l2src device=/dev/$video_device ! video/x-raw-rgb,framerate=30/1 ! ffmpegcolorspace"
+    video_device=$(cat video_device.txt)
+    export GSCAM_CONFIG="v4l2src device=$video_device ! video/x-raw-rgb,framerate=30/1 ! ffmpegcolorspace"
     rosrun gscam gscam
 }
 

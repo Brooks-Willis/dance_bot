@@ -31,11 +31,11 @@ run_camera_calibration() {
 
 
 copy_calibration_file() {
-    cp /home/$USER/.ros/camera_info/camera.yaml /home/$USER/.ros/camera_info/camera_calibration.yaml
+    cp /home/$USER/.ros/camera_info/camera.yaml /home/$USER/.ros/camera_info/camera_calibration.yaml --remove-destination
 }
 
 
-# install_camera_calibration
-# check_camera_topics
-# run_camera_calibration
+install_camera_calibration
+check_camera_topics
+run_camera_calibration
 copy_calibration_file

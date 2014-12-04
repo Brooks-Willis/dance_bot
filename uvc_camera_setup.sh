@@ -16,7 +16,7 @@ install_uvc_camera() {
 
 create_camera_calibration_file() {
     version=$(rosversion -d)
-    sudo cp /home/$USER/.ros/camera_info/camera.yaml /opt/ros/$version/share/uvc_camera/camera_calibration.yaml
+    sudo cp /home/$USER/.ros/camera_info/camera.yaml /opt/ros/$version/share/uvc_camera/camera_calibration.yaml --remove-destination
     sudo chown $USER:$USER /opt/ros/$version/share/uvc_camera/camera_calibration.yaml
 }
 
