@@ -4,7 +4,7 @@ Please note that this setup process clobbers existing camera calibration files i
 
 This setup process assumes that you already have ROS Hydro installed on your system (It should theoretically work with Indigo as well, but it has only been tested with Hydro).
 
-Configuration for this setup process is in ```video_device.txt```. It is currently configured to read from your computer's webcam (```dev/video0```). If you wish to read from a different device, please edit ```video_device.txt```.
+Configuration for this setup process is in ```video_device.txt```. It is currently configured to read from your computer's webcam (```/dev/video0```). If you wish to read from a different device, please edit ```video_device.txt```.
 
 ## [ar_pose](http://wiki.ros.org/ar_pose)
 
