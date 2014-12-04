@@ -25,13 +25,13 @@ We have not included install scripts for gscam. See the official ROS [documentat
 
 **You will need to have ```gscam``` running during this step in a separate thread. See the previous section.**
 
-When you run ```camera_calibration.sh```, a screen should pop up showing video feed from your webcam. For instructions on how to calibrate your camera, please see the ROS [tutorial](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration).
+When you run ```camera_calibration.sh```, a screen should pop up showing video feed from your webcam. For instructions on how to calibrate your camera, please see the ROS [tutorial](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration). This will create camera calibration yaml files that various packages use to process video.
 ```bash
 ./camera_calibration.sh
 ```
 
 ## [uvc_camera](http://wiki.ros.org/uvc_camera)
-This is required by AR Pose. The ```ucv_camera_setup.sh``` script installs uvc_camera and copies the camera_calibration file to the location that uvc_camera expects.
+This is required by AR Pose. The ```ucv_camera_setup.sh``` script installs uvc_camera and copies the ```camera_calibration.yaml``` file created in the previous step to the location that uvc_camera expects.
 ```bash
 ./uvc_camera_setup.sh
 ```
