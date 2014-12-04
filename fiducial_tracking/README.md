@@ -1,4 +1,4 @@
-# Tracking multiple fiducials in ROS
+# Everything you need to track multiple fiducials in ROS
 
 Please note that this setup process clobbers existing camera calibration files in target folders. If you have camera calibration files that you want to keep, do not run the setup scripts without first modifying them.
 
