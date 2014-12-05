@@ -1,0 +1,21 @@
+# the number of patterns to be recognized
+6
+
+# marker 1
+shoulder
+shoulder_pattern.a
+34.0
+0.0 0.0
+
+# marker 2
+elbow
+elbow_pattern.a
+34.0
+0.0 0.0
+
+# marker 3
+wrist
+wrist_pattern.a
+34.0
+0.0 0.0
+
