@@ -12,6 +12,8 @@ free_video_input() {
 
 create_launch_file() {
     video_input=$(cat video_device.txt)
+    fiducials_folder="$(find ~ -type d -name fiducial_tracking)/data/fiducials"
+    echo $fiducials_folder
     catkin_src
     cd ar_tools/ar_pose/launch
     data='<launch>
@@ -26,7 +28,7 @@ create_launch_file() {
                   <param name="camera_info_url" type="string" value="file://$(env HOME)/.ros/camera_info/camera_calibration.yaml" />
               </node>
               <node name="ar_pose" pkg="ar_pose" type="ar_multi" respawn="false" output="screen">
-                  <param name="marker_pattern_list" type="string" value="$(find ~ -type d -name fiducial_tracking/data)/fiducials"/>
+                  <param name="marker_pattern_list" type="string" value="$fiducials_folder/fiducials"/>
                   <param name="threshold" type="int" value="100"/>
               </node>
           </launch>'
