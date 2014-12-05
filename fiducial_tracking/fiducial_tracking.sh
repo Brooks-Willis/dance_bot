@@ -26,7 +26,7 @@ create_launch_file() {
                   <param name="camera_info_url" type="string" value="file://$(env HOME)/.ros/camera_info/camera_calibration.yaml" />
               </node>
               <node name="ar_pose" pkg="ar_pose" type="ar_multi" respawn="false" output="screen">
-                  <param name="marker_pattern_list" type="string" value="$(find -type d -name fiducial_tracking/data ~)/fiducials"/>
+                  <param name="marker_pattern_list" type="string" value="$(find ~ -type d -name fiducial_tracking/data)/fiducials"/>
                   <param name="threshold" type="int" value="100"/>
               </node>
           </launch>'
