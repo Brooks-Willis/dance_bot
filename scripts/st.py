@@ -5,6 +5,9 @@ import shlex
 # Use this one for Mac/Linux
 # DEFAULT_DEV = '/dev/tty.KeySerial1'
 
+#Robofourth manual
+#http://www.strobotics.com/manuals/manual15.htm
+
 # Use this one for PC
 DEFAULT_DEV = '/dev/ttyUSB0'
 DEFAULT_BAUD_RATE = 19200
