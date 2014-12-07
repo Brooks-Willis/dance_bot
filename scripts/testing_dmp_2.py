@@ -73,15 +73,17 @@ if __name__ == '__main__':
 
     #Create a DMP from a 2-D trajectory
     dims = 3                
-    dt = 1.0                
+    dt = 0.5               
     K = 100                 
     D = 2.0 * np.sqrt(K)      
     num_bases = 4          
-    traj = [[0,0,7500],[0,7500,0]]
-    """[[0, 0.0, 7500.0],[0, 750.0, 6750.0],[0, 1500.0, 6000.0],[0, 2250.0, 5250.0],
-            [0, 3000.0, 4500.0],[0, 3750.0, 3750.0],[0, 4500.0, 3000.0],[0, 5250.0, 2250.0],
-            [0, 6000.0, 1500.0],[0, 6750.0, 750.0],[0,7500.0,0.0]]
-    """
+
+    n_points = 20
+    traj = [[0,0,7500]]
+    for i in range(1,n_points+1):
+        scale = i/float(n_points)
+        traj.append([0,7500*scale,7500-(7500*scale)])
+
     resp = makeLFDRequest(dims, traj, dt, K, D, num_bases)
 
     #Set it as the active DMP
