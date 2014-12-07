@@ -5,6 +5,7 @@ import rospy
 import numpy as np
 from dmp.srv import *
 from dmp.msg import *
+import st
 
 #Learn a DMP from demonstration data
 def makeLFDRequest(dims, traj, dt, K_gain, 
@@ -56,6 +57,16 @@ def makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh,
             
     return resp;
 
+def run_arm(plan):
+    arm = st.StArm()
+    arm.start()
+    arm.calibrate()
+    arm.cartesian()
+    arm.home()
+
+    for coord in plan:
+        arm.move_to(coord[0],coord[1],coord[2])
+
 
 if __name__ == '__main__':
     rospy.init_node('dmp_tutorial_node')
@@ -66,9 +77,11 @@ if __name__ == '__main__':
     K = 100                 
     D = 2.0 * np.sqrt(K)      
     num_bases = 4          
-    traj = [[0, 0.0, 7500.0],[0, 750.0, 6750.0],[0, 1500.0, 6000.0],[0, 2250.0, 5250.0],
+    traj = [[0,0,7500],[0,7500,0]]
+    """[[0, 0.0, 7500.0],[0, 750.0, 6750.0],[0, 1500.0, 6000.0],[0, 2250.0, 5250.0],
             [0, 3000.0, 4500.0],[0, 3750.0, 3750.0],[0, 4500.0, 3000.0],[0, 5250.0, 2250.0],
             [0, 6000.0, 1500.0],[0, 6750.0, 750.0],[0,7500.0,0.0]]
+    """
     resp = makeLFDRequest(dims, traj, dt, K, D, num_bases)
 
     #Set it as the active DMP
@@ -91,5 +104,5 @@ if __name__ == '__main__':
         point.positions = [int(val) for val in point.positions]
 
     out = [pnt.positions for pnt in plan.plan.points]
-
     print out
+    run_arm(out)
