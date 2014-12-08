@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-from dance_bot.msg import Plan
+from dance_bot.msg import Path
 
 class ArmCommands:
     def __init__(self):
-        self.dmp_plan = rospy.Subscriber("plan", Plan, self.run_arm)
+        self.dmp_plan = rospy.Subscriber("plan", Path, self.run_arm)
         self.plan = []
         
     def run_arm(self,plan): 
-        self.plan = plan
+        self.plan = self.convert_plan_type(plan)
         arm = st.StArm()
         arm.start()
         arm.calibrate()
@@ -20,6 +20,9 @@ class ArmCommands:
         for coord in fixed_plan:
             arm.move_to(coord[0],coord[1],coord[2])
         self.plan = []
+
+    def convert_plan_type(self,plan):
+        return [[p.x, p.y, p.z] for p in plan.plan]
 
     def norm(self, coord):
         norm_val = math.sqrt(coord[0]**2+coord[1]**2+coord[2]**2)
