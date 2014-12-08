@@ -133,12 +133,50 @@ class StArm():
         self.cxn.write(cmd + CR)
         self.block_on_result(cmd)
 
+
+    def continuous(self):
+    	cmd = CONTINUOUS
+    	print('Setting mode to continuous...')
+    	self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+
+    def segmented(self):
+    	cmd = SEGMENTED
+    	print('Setting mode to segmented...')
+    	self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+
     def joint(self):
         cmd = JOINT
         print('Setting Joint mode...')
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
         self.block_on_result(cmd)
+
+    def learn(self, route_name, commands):
+    	# commands should be a list [[x,y,z],[x,y,z],...]
+    	cmd = STARTOVER
+    	print('Resetting for learning...')
+        self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+
+        cmd = str(len(commands)) + RESERVE
+        self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+
+        cmd = ROUTE + route_name
+        print('Defining rout %s...',%rout)
+        self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+
+        for point in commands:
+        	cmd = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2]) + ' ' + LEARN
+        	self.cxn.flushInput()
+        	self.cxn.write(cmd + CR)
+        	self.block_on_result(cmd)
 
     def calibrate(self):
         cmd = CALIBRATE
@@ -219,6 +257,14 @@ class StArm():
         cmd = str(accel) + ' ' + ACCEL + IMPERATIVE
         print('Setting acceleration to %d' % accel)
         self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+
+    def run_rout(self, rout):
+    	# rout is string name of learned path
+    	cmd = rout + RUN
+    	print('Running rout %s' % rout)
+    	self.cxn.flushInput()
         self.cxn.write(cmd + CR)
         self.block_on_result(cmd)
 
