@@ -67,22 +67,46 @@ def run_arm(plan):
     for coord in plan:
         arm.move_to(coord[0],coord[1],coord[2])
 
+def make_line(n_points):
+    traj = [[0,0,7500]]
+    for i in range(1,n_points+1):
+        scale = i/float(n_points)
+        traj.append([0,7500*scale,7500-(7500*scale)])
+    return traj
+
+def make_triangle(n_points):
+    traj = []
+    for i in range(int(n_points/2),n_points+1):
+        scale = i/float(n_points)
+        traj.append([-3000*scale, -3000+(3000*scale), 5500])
+    for i in range(1,n_points+1):
+        scale = i/float(n_points)
+        traj.append([-3000+(3000*scale), 3000*scale, 5500])
+    for i in range(1,n_points+1):
+        scale = i/float(n_points)
+        traj.append([3000*scale, 3000-(3000*scale), 5500])
+    for i in range(1,n_points+1):
+        scale = i/float(n_points)
+        traj.append([3000*scale, 3000-(3000*scale), 5500])
+    for i in range(1,int(n_points/2)):
+        scale = i/float(n_points)
+        traj.append([3000-(3000*scale), 3000*scale, 5500])
+    return traj
+
 
 if __name__ == '__main__':
     rospy.init_node('dmp_tutorial_node')
 
     #Create a DMP from a 2-D trajectory
     dims = 3                
-    dt = 0.5               
+    dt = 0.2               
     K = 100                 
     D = 2.0 * np.sqrt(K)      
     num_bases = 4          
 
-    n_points = 20
-    traj = [[0,0,7500]]
-    for i in range(1,n_points+1):
-        scale = i/float(n_points)
-        traj.append([0,7500*scale,7500-(7500*scale)])
+    n_points = 10
+    traj = make_triangle(n_points)
+    
 
     resp = makeLFDRequest(dims, traj, dt, K, D, num_bases)
 
