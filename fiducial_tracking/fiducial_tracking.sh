@@ -9,11 +9,16 @@ free_video_input() {
     fuser $video_input --kill --silent
 }
 
+copy_fiducial_data(){
+    catkin_ws="$(find ~ -type d -name catkin_ws)"
+    fiducials_folder="$(find ~ -type d -name fiducial_tracking)/data/"
+    ar_pose_directory="$(find $catkin_ws -type d -name ar_pose -print -quit)/data/dance_bot_data/"
+    rsync -a --delete $fiducials_folder $ar_pose_directory
+}
 
 create_launch_file() {
     video_input=$(cat video_device.txt)
     fiducials_folder="$(find ~ -type d -name fiducial_tracking)/data"
-    echo $fiducials_folder
     catkin_src
     cd ar_tools/ar_pose/launch
     data='<launch>
@@ -28,7 +33,7 @@ create_launch_file() {
                   <param name="camera_info_url" type="string" value="file://$(env HOME)/.ros/camera_info/camera_calibration.yaml" />
               </node>
               <node name="ar_pose" pkg="ar_pose" type="ar_multi" respawn="false" output="screen">
-                  <param name="marker_pattern_list" type="string" value="$(find ar_pose)/data/multi/object_letters"/>
+                  <param name="marker_pattern_list" type="string" value="$(find ar_pose)/data/dance_bot_data/fiducials"/>
                   <param name="threshold" type="int" value="100"/>
               </node>
           </launch>'
@@ -37,4 +42,5 @@ create_launch_file() {
 
 free_video_input
 create_launch_file
+copy_fiducial_data
 roslaunch ar_pose ar_pose_dance_bot.launch

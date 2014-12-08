@@ -1,58 +1,38 @@
 #the number of patterns to be recognized
-3
+6
 
 #marker 1
-z
-data/multi/patt.z
-34.0
-0.0 0.0
-
-#marker 2
-y
-data/multi/patt.y
-34.0
-0.0 0.0
-
-#marker 3
-x
-data/multi/patt.x
-34.0
-0.0 0.0
-
-#marker 2
 a
-data/multi/patt.a
+data/dance_bot_data/patt.a
+234.0
+0.0 0.0
+
+#marker 2
+b
+data/dance_bot_data/patt.b
 234.0
 0.0 0.0
 
 #marker 3
-b
-data/multi/patt.b
+c
+data/dance_bot_data/patt.c
 234.0
 0.0 0.0
 
 #marker 4
-c
-data/multi/patt.c
+d
+data/dance_bot_data/patt.d
 234.0
 0.0 0.0
 
 #marker 5
-d
-data/multi/patt.d
+g
+data/dance_bot_data/patt.g
 234.0
 0.0 0.0
 
 #marker 6
-g
-data/multi/patt.g
-234.0
-0.0 0.0
-
-#marker 7
 f
-data/multi/patt.f
+data/dance_bot_data/patt.f
 234.0
 0.0 0.0
-
-
