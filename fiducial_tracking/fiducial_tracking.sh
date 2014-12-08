@@ -10,10 +10,18 @@ free_video_input() {
 }
 
 
+copy_fiducial_data() {
+    catkin_ws="$(find ~ -type d -name catkin_ws)"
+    fiducial_folder="$(find ~ -type d -name fiducial_tracking)/data"
+    ar_pose_directory="$(find $catkin_ws -type d -name ar_pose -print -quit)/data/dance_bot_data"
+    echo $ar_pose_directory
+    cp --recursive $fiducial_folder $ar_pose_directory
+}   
+
+
 create_launch_file() {
-    video_input=$(cat video_device.txt)
-    fiducials_folder=\"$(find ~ -type d -name fiducial_tracking)/data/fiducials\"
-    echo $fiducials_folder
+    video_input="$(cat video_device.txt)"
+    fiducials_folder="$(find ~ -type d -name fiducial_tracking)/data"
     catkin_src
     cd ar_tools/ar_pose/launch
     data="<launch>
@@ -37,4 +45,5 @@ create_launch_file() {
 
 free_video_input
 create_launch_file
+copy_fiducial_data
 roslaunch ar_pose ar_pose_dance_bot.launch
