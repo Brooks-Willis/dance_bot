@@ -7,7 +7,7 @@ from dmp.srv import *
 from dmp.msg import *
 import st
 import math
-from dance_bot.msg import Plan
+from dance_bot.msg import Path, ArmPos
 
 #Learn a DMP from demonstration data
 def makeLFDRequest(dims, traj, dt, K_gain, 
@@ -89,7 +89,7 @@ def make_triangle(n_points):
 
 if __name__ == '__main__':
     rospy.init_node('dmp_tutorial_node')
-    plan_publisher  = rospy.Publisher("plan", Plan)
+    plan_publisher  = rospy.Publisher("plan", Path)
     #Create a DMP from a 2-D trajectory
     dims = 3                
     dt = 0.2               
@@ -124,4 +124,6 @@ if __name__ == '__main__':
 
     out = [pnt.positions for pnt in plan.plan.points]
     print "DMP Output:", out
-    plan_publisher.publish(out)
+    path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in out]
+    print path
+    plan_publisher.publish(Path(path=path))
