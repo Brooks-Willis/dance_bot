@@ -6,6 +6,8 @@ import numpy as np
 from dmp.srv import *
 from dmp.msg import *
 import st
+import math
+from dance_bot.msg import Plan
 
 #Learn a DMP from demonstration data
 def makeLFDRequest(dims, traj, dt, K_gain, 
@@ -57,15 +59,6 @@ def makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh,
             
     return resp;
 
-def run_arm(plan):
-    arm = st.StArm()
-    arm.start()
-    arm.calibrate()
-    arm.cartesian()
-    arm.home()
-
-    for coord in plan:
-        arm.move_to(coord[0],coord[1],coord[2])
 
 def make_line(n_points):
     traj = [[0,0,7500]]
@@ -76,10 +69,10 @@ def make_line(n_points):
 
 def make_triangle(n_points):
     traj = []
-    for i in range(int(n_points/2),n_points+1):
+    """for i in range(int(math.ceil(n_points/2)),n_points+1):
         scale = i/float(n_points)
-        traj.append([-3000*scale, -3000+(3000*scale), 5500])
-    for i in range(1,n_points+1):
+        traj.append([-3000*scale, -3000+(3000*scale), 5500])"""
+    for i in range(0,n_points+1):
         scale = i/float(n_points)
         traj.append([-3000+(3000*scale), 3000*scale, 5500])
     for i in range(1,n_points+1):
@@ -88,25 +81,25 @@ def make_triangle(n_points):
     for i in range(1,n_points+1):
         scale = i/float(n_points)
         traj.append([3000*scale, 3000-(3000*scale), 5500])
-    for i in range(1,int(n_points/2)):
+    """for i in range(1,int(math.floor(n_points/2))):
         scale = i/float(n_points)
-        traj.append([3000-(3000*scale), 3000*scale, 5500])
+        traj.append([3000-(3000*scale), 3000*scale, 5500])"""
     return traj
 
 
 if __name__ == '__main__':
     rospy.init_node('dmp_tutorial_node')
-
+    plan_publisher  = rospy.Publisher("plan", Plan)
     #Create a DMP from a 2-D trajectory
     dims = 3                
     dt = 0.2               
     K = 100                 
     D = 2.0 * np.sqrt(K)      
-    num_bases = 4          
+    num_bases = 50         
 
     n_points = 10
     traj = make_triangle(n_points)
-    
+    print "Input:", traj
 
     resp = makeLFDRequest(dims, traj, dt, K, D, num_bases)
 
@@ -114,14 +107,14 @@ if __name__ == '__main__':
     makeSetActiveRequest(resp.dmp_list)
 
     #Now, generate a plan
-    x_0 = [0.0, 0.0, 7500.0]          #Plan starting at a different point than demo 
+    x_0 = [-3000.0,0.0,5500.0]          #Plan starting at a different point than demo 
     x_dot_0 = [0.0,0.0,0.0]   
     t_0 = 0                
-    goal = [0.0, 7500.0, 0.0]         #Plan to a different goal than demo
+    goal = [3000.0, 0.0, 5500.0]         #Plan to a different goal than demo
     goal_thresh = [0.2,0.2,0.2]
     seg_length = -1          #Plan until convergence to goal
     tau = resp.tau       #Desired plan should take twice as long as dsemo
-    dt = 1.0
+    dt = .2
     integrate_iter = 5       #dt is rather large, so this is > 1  
     plan = makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh, 
                            seg_length, tau, dt, integrate_iter)
@@ -130,5 +123,5 @@ if __name__ == '__main__':
         point.positions = [int(val) for val in point.positions]
 
     out = [pnt.positions for pnt in plan.plan.points]
-    print out
-    run_arm(out)
+    print "DMP Output:", out
+    plan_publisher.publish(out)
