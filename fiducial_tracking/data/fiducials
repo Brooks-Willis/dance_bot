@@ -1,22 +1,22 @@
 #the number of patterns to be recognized
-6
+1
 
 #marker 1
-a
-data/dance_bot_data/patt.a
-234.0
+x
+data/dance_bot_data/patt.x
+34.0
 0.0 0.0
 
 #marker 2
-b
-data/dance_bot_data/patt.b
-234.0
+y
+data/dance_bot_data/patt.y
+34.0
 0.0 0.0
 
 #marker 3
-c
-data/dance_bot_data/patt.c
-234.0
+z
+data/dance_bot_data/patt.z
+34.0
 0.0 0.0
 
 #marker 4

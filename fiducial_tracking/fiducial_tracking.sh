@@ -34,7 +34,7 @@ create_launch_file() {
               </node>
               <node name="ar_pose" pkg="ar_pose" type="ar_multi" respawn="false" output="screen">
                   <param name="marker_pattern_list" type="string" value="$(find ar_pose)/data/dance_bot_data/fiducials"/>
-                  <param name="threshold" type="int" value="100"/>
+                  <param name="threshold" type="int" value="50"/>
               </node>
           </launch>'
     echo $data > ar_pose_dance_bot.launch
