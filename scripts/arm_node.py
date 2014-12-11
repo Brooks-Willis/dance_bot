@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from dance_bot.msg import Path
+import rospy
 
 class ArmCommands:
     def __init__(self):
@@ -16,13 +17,13 @@ class ArmCommands:
         arm.home()
         fixed_output = self.plan_check(plan)
         print "Checked output:", fixed_output
-        return None #Used to keep arm from moving during testing
+        #return None #Used to keep arm from moving during testing
         for coord in fixed_plan:
             arm.move_to(coord[0],coord[1],coord[2])
         self.plan = []
 
     def convert_plan_type(self,plan):
-        return [[p.x, p.y, p.z] for p in plan.plan]
+        return [[p.x, p.y, p.z] for p in plan.path]
 
     def norm(self, coord):
         norm_val = math.sqrt(coord[0]**2+coord[1]**2+coord[2]**2)
