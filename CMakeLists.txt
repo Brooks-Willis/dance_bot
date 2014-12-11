@@ -49,6 +49,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    Path.msg
    ArmPos.msg
+   PathWithTime.msg
  )
 
 ## Generate services in the 'srv' folder
