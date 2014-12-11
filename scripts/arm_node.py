@@ -2,24 +2,26 @@
 
 from dance_bot.msg import Path
 import rospy
+import math
+import st
 
 class ArmCommands:
     def __init__(self):
         self.dmp_plan = rospy.Subscriber("plan", Path, self.run_arm)
         self.plan = []
-        
+        self.arm = st.StArm()
+        self.arm.start()
+        self.arm.calibrate()
+        self.arm.cartesian()
+        self.arm.home()
+
     def run_arm(self,plan): 
         self.plan = self.convert_plan_type(plan)
-        arm = st.StArm()
-        arm.start()
-        arm.calibrate()
-        arm.cartesian()
-        arm.home()
-        fixed_output = self.plan_check(plan)
+        fixed_output = self.plan_check()
         print "Checked output:", fixed_output
         #return None #Used to keep arm from moving during testing
-        for coord in fixed_plan:
-            arm.move_to(coord[0],coord[1],coord[2])
+        for coord in fixed_output:
+            self.arm.move_to(coord[0],coord[1],coord[2])
         self.plan = []
 
     def convert_plan_type(self,plan):

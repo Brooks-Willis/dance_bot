@@ -6,7 +6,9 @@ import numpy as np
 from dmp.srv import *
 from dmp.msg import *
 import st
+from std_msgs.msg import String
 import math
+import time
 from dance_bot.msg import Path, ArmPos
 
 #Learn a DMP from demonstration data
@@ -89,7 +91,9 @@ def make_triangle(n_points):
 
 if __name__ == '__main__':
     rospy.init_node('dmp_tutorial_node')
-    plan_publisher  = rospy.Publisher("plan", Path)
+    #string_publisher  = rospy.Publisher("plan3", String, queue_size=10)
+    plan_publisher  = rospy.Publisher("plan", Path, queue_size=10)
+    print plan_publisher
     #Create a DMP from a 2-D trajectory
     dims = 3                
     dt = 0.2               
@@ -126,4 +130,15 @@ if __name__ == '__main__':
     print "DMP Output:", out
     path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in out]
     print path
+#    plan_publisher.publish(Path(path=path))
+    print "published"
+    r = rospy.Rate(5)
+    time.sleep(1)
     plan_publisher.publish(Path(path=path))
+    rospy.spin()
+"""
+    while not(rospy.is_shutdown()):
+        string_publisher.publish(String('test'))
+    #    plan_publisher.publish(Path(path=path))
+        r.sleep()
+"""
