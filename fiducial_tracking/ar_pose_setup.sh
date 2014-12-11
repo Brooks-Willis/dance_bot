@@ -4,12 +4,19 @@
 source catkin_utilities.sh
 
 
+# SSH version
+# download_ar_pose() {
+#     if [ ! -d "ar_tools" ]; then
+#         git clone git@github.com:arlolinscope/ar_tools.git
+#     fi
+# }
+
+# HTTPS version
 download_ar_pose() {
     if [ ! -d "ar_tools" ]; then
-        git clone git@github.com:arlolinscope/ar_tools.git
+        git clone https://github.com/arlolinscope/ar_tools.git
     fi
 }
-
 
 setup_ar_pose() {
     catkin_src
