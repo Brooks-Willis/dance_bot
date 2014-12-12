@@ -1,21 +1,38 @@
-# the number of patterns to be recognized
-6
+#the number of patterns to be recognized
+3
 
-# marker 1
-shoulder
-shoulder_pattern.a
+#marker 1
+x
+data/dance_bot_data/patt.x
 34.0
 0.0 0.0
 
-# marker 2
-elbow
-elbow_pattern.a
+#marker 2
+y
+data/dance_bot_data/patt.y
 34.0
 0.0 0.0
 
-# marker 3
-wrist
-wrist_pattern.a
+#marker 3
+z
+data/dance_bot_data/patt.z
 34.0
 0.0 0.0
 
+#marker 4
+d
+data/dance_bot_data/patt.d
+234.0
+0.0 0.0
+
+#marker 5
+g
+data/dance_bot_data/patt.g
+234.0
+0.0 0.0
+
+#marker 6
+f
+data/dance_bot_data/patt.f
+234.0
+0.0 0.0
