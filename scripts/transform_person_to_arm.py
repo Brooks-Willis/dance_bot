@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-import rospy 
-from ar_pose.msg import ARMarker
-from dance_bot.msg import PathWithTime, ArmPos, Path
+import rospy
+from dance_bot.msg import PathWithTime, ArmPos, Path, ARMarker
 
 def transform_coords(person_coord, p_rad):
     p_x, p_y, p_z = person_coord
@@ -14,15 +13,15 @@ def transform_path(person_path, p_rad):
 
 class PathCompiler(object):
 
-    def __init__(self, joint_num, path_length=100, arm_radius):
+    def __init__(self, joint_num, arm_radius, path_length=100):
         rospy.init_node('compile_path')
         self.joint = joint_num
         self.path_length = max(2,path_length)
         self.arm_radius = arm_radius
         self.poses = []
 
-        self.sub = rospy.Subscriber('???',ARMaker,self.got_marker)
-        self.pub = rospy.Publisher('training_path_'+str(,PathWithTime)
+        self.sub = rospy.Subscriber('RAAAGGHEHOIGWEOIHWGEWIHEGOIH',ARMarker,self.got_marker)
+        self.pub = rospy.Publisher('training_path_'+str(joint_num),PathWithTime)
 
     def got_marker(self, data):
         if data.id == self.joint:
@@ -63,3 +62,6 @@ if __name__ == "__main__":
         print "\n"
 
     print "whole path:", transform_path(p_coords,p_rad)
+
+    path_comp = PathCompiler(1,1)
+    rospy.spin()
