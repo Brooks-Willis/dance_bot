@@ -46,6 +46,8 @@ RESERVE = 'RESERVE'
 ROUTE = 'ROUTE'
 LEARN = 'LEARN'
 START_HERE = 'START_HERE'
+SMOOTH = 'SMOOTH'
+AJUST = 'AJUST'
 
 OK = 'OK'
 
@@ -75,7 +77,6 @@ class StArm():
     '''
     Description:
     Create a serial connection and open it.
-
     Inputs:
         dev_name: The name of the serial device. For Macs/Linux, use
         /dev/tty.somestringofcharsandnums and for PCs use COMX where
@@ -160,31 +161,22 @@ class StArm():
         self.cxn.write(cmd + CR)
         self.block_on_result(cmd)
 
-    def learn(self, route_name, commands):
+    def create_route(self, route_name, commands):
         # commands should be a list [[x,y,z],[x,y,z],...]
-        cmd = STARTOVER
-        print('Resetting for learning...')
-        self.cxn.flushInput()
-        self.cxn.write(cmd + CR)
-        self.block_on_result(cmd)
+        cmd = CONTINUOUS + ' ' + ADJUST + ' ' + NEW + ' ' + ROUTE + ' ' + route_name
 
-        cmd = str(len(commands)) + ' ' + RESERVE
-        self.cxn.flushInput()
-        self.cxn.write(cmd + CR)
-        self.block_on_result(cmd)
-
-        cmd = ROUTE + ' ' + route_name
-        print('Defining route %s...'%route_name)
-        self.cxn.flushInput()
-        self.cxn.write(cmd + CR)
-        self.block_on_result(cmd)
-
+        pint "Creating route " + route_name
+        # cmd = str(len(commands)) + ' ' + RESERVE
+        index = 0
         for point in commands:
-            print point
-            cmd = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2]) + ' ' + LEARN
-            self.cxn.flushInput()
-            self.cxn.write(cmd + CR)
-            self.block_on_result(cmd)
+            index += 1
+            point = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2])
+            print "Adding point " + point
+            cmd += ' ' + route_name + str(index) + ' ' + point + IMPERATIVE
+
+        self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
 
     def calibrate(self):
         cmd = CALIBRATE
@@ -278,7 +270,7 @@ class StArm():
 
     def run_route(self, route):
         # route is string name of learned path
-        cmd = 'P1 GOTO '+ route + ' ' + START_HERE + ' ' + CONTINUOUS + ' ' + RUN
+        cmd = SMOOTH + ' ' + route + ' ' + RUN
         print('Running route %s' % route)
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
@@ -408,4 +400,3 @@ class StArm():
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
         self.block_on_result(cmd)
-
