@@ -1,8 +1,8 @@
 import st
-from math import sqrt
+import math
 
 def norm(coord):
-    norm_val = sqrt(coord[0]**2+coord[1]**2+coord[2]**2)
+    norm_val = math.sqrt(coord[0]**2+coord[1]**2+coord[2]**2)
     print "Norm:", norm_val
     return norm_val
 
@@ -16,13 +16,13 @@ def plan_check(plan):
         if norm(coord) < 3000:
             error = 3000/norm(coord)
             for i in range(len(coord)):
-                coord[i]=coord[i]*error
+                coord[i]=int(math.ceil(coord[i]*error))
             print "Too close - new coord:", coord
         
         if norm(coord) > 7500:
             error = 7500/norm(coord)
             for i in range(len(coord)):
-                coord[i]=coord[i]*error
+                coord[i]=math.trunc(coord[i]*error)
             print "Too far - new coord:", coord
         new_plan.append(coord)
     return new_plan
