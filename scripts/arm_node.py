@@ -46,14 +46,14 @@ class ArmCommands:
                 print "Z target less than zero (%d), recasting to zero" %coord[2]
                 coord[2] = 0
             
-            if self.norm(coord) < 3000:
-                error = 3000/np.norm(coord)
+            if np.linalg.norm(coord) < 3000:
+                error = 3000/np.linalg.norm(coord)
                 for i in range(len(coord)):
                     coord[i]=int(math.ceil(coord[i]*error))
                 print "Too close - new coord:", coord
             
-            if self.norm(coord) > 7500:
-                error = 7500/np.norm(coord)
+            if np.linalg.norm(coord) > 7500:
+                error = 7500/np.linalg.norm(coord)
                 for i in range(len(coord)):
                     coord[i]=math.trunc(coord[i]*error)
                 print "Too far - new coord:", coord

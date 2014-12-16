@@ -146,11 +146,11 @@ if __name__ == '__main__':
             print "I made it!" 
             print "index", i
             print "point", out[i]
-            out = out[:i]
-            out.append[goal]
+            cropped_out = out[:i]
+            out.append([int(goal[0]),int(goal[1]),int(goal[2])])
             break
 
-    path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in out]
+    path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in cropped_out]
     print path
 #    plan_publisher.publish(Path(path=path))
     print "published"
