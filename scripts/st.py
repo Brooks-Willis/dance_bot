@@ -47,7 +47,8 @@ ROUTE = 'ROUTE'
 LEARN = 'LEARN'
 START_HERE = 'START_HERE'
 SMOOTH = 'SMOOTH'
-AJUST = 'AJUST'
+ADJUST = 'ADJUST'
+NEW = 'NEW'
 
 OK = 'OK'
 
@@ -165,14 +166,14 @@ class StArm():
         # commands should be a list [[x,y,z],[x,y,z],...]
         cmd = CONTINUOUS + ' ' + ADJUST + ' ' + NEW + ' ' + ROUTE + ' ' + route_name
 
-        pint "Creating route " + route_name
+        print "Creating route " + route_name
         # cmd = str(len(commands)) + ' ' + RESERVE
         index = 0
         for point in commands:
             index += 1
             point = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2])
             print "Adding point " + point
-            cmd += ' ' + route_name + str(index) + ' ' + point + IMPERATIVE
+            cmd += ' ' + route_name + ' ' + str(index) + ' ' + point + IMPERATIVE
 
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
