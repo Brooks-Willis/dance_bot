@@ -1,0 +1,3 @@
+dance_bot/PathWithTime hand
+dance_bot/PathWithTime elbow
+dance_bot/PathWithTime shoulder

@@ -4,6 +4,7 @@ import rospy
 import math
 import st
 import matplotlib.pyplot as plt
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
 class ArmCommands:
@@ -11,14 +12,15 @@ class ArmCommands:
         self.dmp_plan = rospy.Subscriber("plan", Path, self.build_plot)
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111, projection='3d')
+        self.plan = False
 
     def build_plot(self,plan): 
         self.plan = self.convert_plan_type(plan)
         fixed_output = self.plan_check()
         print "Checked output:", fixed_output
-        [xs, ys, zs]=[list(b) for b in zip(*a)]
-        Axes3D.scatter(xs, ys, zs)
-        self.plan = []
+        [xs, ys, zs]=[list(b) for b in zip(*self.plan)]
+        length = len(xs)
+        self.ax.scatter(xs[:length], ys[:length], zs[:length], c=np.arange(length))
 
     def convert_plan_type(self,plan):
         return [[p.x, p.y, p.z] for p in plan.path]
@@ -49,7 +51,16 @@ class ArmCommands:
             new_plan.append(coord)
         return new_plan    
 
+    def execute(self):
+        r = rospy.Rate(1)
+        while not(rospy.is_shutdown()):
+            print "hello"
+            if self.plan:
+                print "here I am!"
+                plt.show()
+            r.sleep()
+
 if __name__ == "__main__":
     rospy.init_node('robot_arm', anonymous=True)
     object_tracker = ArmCommands()
-    rospy.spin()
+    object_tracker.execute()
