@@ -4,16 +4,20 @@ from dance_bot.msg import Path
 import rospy
 import math
 import st
+import numpy as np
 
 class ArmCommands:
     def __init__(self):
         self.dmp_plan = rospy.Subscriber("plan", Path, self.run_arm)
         self.plan = []
-        self.arm = st.StArm()
-        self.arm.start()
-        self.arm.calibrate()
-        self.arm.cartesian()
-        self.arm.home()
+        try:
+            self.arm = st.StArm()
+            self.arm.start()
+            self.arm.calibrate()
+            self.arm.cartesian()
+            self.arm.home()
+        except:
+            print "Arm not connected"
 
     def run_arm(self,plan): 
         self.plan = self.convert_plan_type(plan)
@@ -21,16 +25,19 @@ class ArmCommands:
         print "Checked output:", fixed_output
         #return None #Used to keep arm from moving during testing
         for coord in fixed_output:
-            self.arm.move_to(coord[0],coord[1],coord[2])
+            try:
+                self.arm.move_to(coord[0],coord[1],coord[2])
+            except:
+                pass
         self.plan = []
 
     def convert_plan_type(self,plan):
         return [[p.x, p.y, p.z] for p in plan.path]
 
-    def norm(self, coord):
+    """def norm(self, coord):
         norm_val = math.sqrt(coord[0]**2+coord[1]**2+coord[2]**2)
         #print "Norm:", norm_val
-        return norm_val
+        return norm_val"""
 
     def plan_check(self):
         new_plan = []
@@ -40,13 +47,13 @@ class ArmCommands:
                 coord[2] = 0
             
             if self.norm(coord) < 3000:
-                error = 3000/norm(coord)
+                error = 3000/np.norm(coord)
                 for i in range(len(coord)):
                     coord[i]=int(math.ceil(coord[i]*error))
                 print "Too close - new coord:", coord
             
             if self.norm(coord) > 7500:
-                error = 7500/norm(coord)
+                error = 7500/np.norm(coord)
                 for i in range(len(coord)):
                     coord[i]=math.trunc(coord[i]*error)
                 print "Too far - new coord:", coord

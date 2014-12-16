@@ -88,6 +88,16 @@ def make_triangle(n_points):
         traj.append([3000-(3000*scale), 3000*scale, 5500])"""
     return traj
 
+def near_goal(target, pos, error):
+    dx = abs(target[0]-pos[0])
+    dy = abs(target[1]-pos[1])
+    dz = abs(target[2]-pos[2])
+    variance = [dx, dy, dz]
+    print "variance:", variance
+    if np.linalg.norm(variance) < error:
+        return True
+    else:
+        return False
 
 if __name__ == '__main__':
     rospy.init_node('dmp_tutorial_node')
@@ -95,6 +105,7 @@ if __name__ == '__main__':
     plan_publisher  = rospy.Publisher("plan", Path, queue_size=10)
     print plan_publisher
     #Create a DMP from a 3-D trajectory
+    error = 5 #Encoder tics
     dims = 3                
     dt = 0.2               
     K = 100                 
@@ -128,6 +139,17 @@ if __name__ == '__main__':
 
     out = [pnt.positions for pnt in plan.plan.points]
     print "DMP Output:", out
+    
+    #Check for goal proximity, cut off path when within error.
+    for i in range(len(out)): 
+        if near_goal(goal, out[i], error):
+            print "I made it!" 
+            print "index", i
+            print "point", out[i]
+            out = out[:i]
+            out.append[goal]
+            break
+
     path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in out]
     print path
 #    plan_publisher.publish(Path(path=path))
