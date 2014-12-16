@@ -51,6 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
    Path.msg
    ArmPos.msg
    PathWithTime.msg
+   ArmPath.msg
    ARMarker.msg
    ARMarkers.msg
  )

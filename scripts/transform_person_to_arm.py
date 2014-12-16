@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 import rospy
-from dance_bot.msg import PathWithTime, ArmPos, Path, ARMarker
+from dance_bot.msg import ARMarkers
+from std_msgs.msg import String
+import numpy as np
+import csv
+import pandas
 
 def transform_coords(person_coord, p_rad):
     p_x, p_y, p_z = person_coord
@@ -10,58 +14,81 @@ def transform_coords(person_coord, p_rad):
 def transform_path(person_path, p_rad):
     return [transform_coords(coord, p_rad) for coord in person_path]
 
-
 class PathCompiler(object):
 
-    def __init__(self, joint_num, arm_radius, path_length=100):
+    def __init__(self, output_path, arm_radius, hand_num=0, elbow_num=1, shoulder_num=2):
         rospy.init_node('compile_path')
-        self.joint = joint_num
-        self.path_length = max(2,path_length)
+        self.nums = [hand_num, elbow_num, shoulder_num]
         self.arm_radius = arm_radius
-        self.poses = []
 
-        self.sub = rospy.Subscriber('RAAAGGHEHOIGWEOIHWGEWIHEGOIH',ARMarker,self.got_marker)
-        self.pub = rospy.Publisher('training_path_'+str(joint_num),PathWithTime)
+        self.sub = rospy.Subscriber('ar_pose_marker',ARMarkers,self.got_markers)
+        self.sub = rospy.Subscriber('kill_sig',String,self.kill_sig)
 
-    def got_marker(self, data):
-        if data.id == self.joint:
-            x = data.pose.pose.position.x
-            y = data.pose.pose.postition.y
-            z = data.pose.pose.position.z
-            time = data.header.stamp
-            self.poses.append(([x,y,x],time))
-        if len(self.poses) >= self.path_length:
-            pos, times = [list(x) for x in zip(*self.poses)]
-            self.poses = []
-            self.publish(pos,times)
+        self.outfile = open(output_path,'w')
+        self.writer = csv.writer(self.outfile, delimiter=',')
 
-    def publish(self,pos,times):
-        robot_pos = transform_path(pos, self.arm_radius)
-        path = Path(path=[ArmPos(x=p[0],y=p[1],z=p[2]) for p in robot_pos])
-        path_with_time = PathWithTime(path=path, times=times)
-        self.pub.publish(path_with_time)
+        headers = ['times']
+        for name in ['hand','elbow','shoulder']:
+            headers = headers + [name+suf for suf in ['_x','_y','_z']]
+        
+        self.writer.writerow(headers)
 
+    def got_markers(self, data):
+        found_poses = {}
+        for marker in data.markers:
+            x = marker.pose.pose.position.x
+            y = marker.pose.pose.position.y
+            z = marker.pose.pose.position.z
+            time = marker.header.stamp
+            if marker.id in self.nums:
+                found_poses[marker.id] = [x,y,z]
 
+        if len(found_poses.keys()) == len(self.nums):
+            row = [time]
+            shoulder = found_poses[self.nums[-1]]
+            for i in self.nums:
+                joint = found_poses[i]
+                arm_pose = [joint[i] - shoulder[i] for i in [0,1,2]]
+                robot_pose = transform_coords(arm_pose, self.arm_radius)
+                row = row + robot_pose
+            self.writer.writerow(row)
+
+    def kill_sig(self,data):
+        self.outfile.close()
+
+class LoadedPath(object):
+
+    def __init__(self, filepath):
+        data = pandas.read_csv(filepath)
+        self.hand_path = zip(data['hand_x'],data['hand_y'],data['hand_z'])
+        self.elbow_path = zip(data['elbow_x'],data['elbow_y'],data['elbow_z'])
+        self.times = list(data['times'].values)
 
 
 if __name__ == "__main__":
     rospy.init_node('compile_path')
 
-    p_rad = 1.0
+    # p_rad = 1.0
 
-    p_coords = [[0,0,0],
-                [1,0,0],
-                [0,1,0],
-                [0,0,1],
-                [0,-1,0],
-                [.5,.5,.5]]
+    # p_coords = [[0,0,0],
+    #             [1,0,0],
+    #             [0,1,0],
+    #             [0,0,1],
+    #             [0,-1,0],
+    #             [.5,.5,.5]]
 
-    for coord in p_coords:
-        print "Person: ", coord
-        print "Robot Arm: ", transform_coords(coord,p_rad)
-        print "\n"
+    # for coord in p_coords:
+    #     print "Person: ", coord
+    #     print "Robot Arm: ", transform_coords(coord,p_rad)
+    #     print "\n"
 
-    print "whole path:", transform_path(p_coords,p_rad)
+    # print "whole path:", transform_path(p_coords,p_rad)
 
-    path_comp = PathCompiler(1,1)
+    path_comp = PathCompiler('/home/rboy/catkin_ws/src/dance_bot/out2.csv', 1)
+
+    # path = LoadedPath('/home/rboy/catkin_ws/src/dance_bot/test1.csv')
+    # print path.hand_path
+    # print path.elbow_path
+    # print path.times
+
     rospy.spin()

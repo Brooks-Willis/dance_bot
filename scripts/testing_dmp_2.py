@@ -94,7 +94,7 @@ if __name__ == '__main__':
     #string_publisher  = rospy.Publisher("plan3", String, queue_size=10)
     plan_publisher  = rospy.Publisher("plan", Path, queue_size=10)
     print plan_publisher
-    #Create a DMP from a 2-D trajectory
+    #Create a DMP from a 3-D trajectory
     dims = 3                
     dt = 0.2               
     K = 100                 
