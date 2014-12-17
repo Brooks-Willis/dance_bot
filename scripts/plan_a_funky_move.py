@@ -78,7 +78,7 @@ class DMPPlanner(object):
         goal_thresh = [1,1,1]
         tau = dmps.tau
         integrate_iter = 5
-        dt = .2
+        dt = .3
         plan = makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh, 
                            seg_length, tau, dt, integrate_iter)
 
@@ -87,6 +87,7 @@ class DMPPlanner(object):
 
         # publish plan
         print "publishing"
+
         self.plan_publisher.publish(path)
 
     def makePath(self,plan):
@@ -94,8 +95,8 @@ class DMPPlanner(object):
             point.positions = [int(val) for val in point.positions]
 
         out = [pnt.positions for pnt in plan.plan.points]
-        path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in out]
-        return Path(path=path)
+        path = [ArmPos(x=out[i][0], y=out[i][1], z=out[i][2]) for i in range(len(out)) if i%2==0]
+        return Path(path=path[:13])
 
     
 

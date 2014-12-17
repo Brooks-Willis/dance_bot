@@ -14,21 +14,24 @@ class ArmCommands:
             self.arm = st.StArm()
             self.arm.start()
             self.arm.calibrate()
-            self.arm.cartesian()
             self.arm.home()
         except:
             print "Arm not connected"
 
-    def run_arm(self,plan): 
+    def run_arm(self,plan):
         self.plan = self.convert_plan_type(plan)
         fixed_output = self.plan_check()
-        print "Checked output:", fixed_output
+        #print "Checked output:", fixed_output
+        # fixed_output = fixed_output[:5]
+        print fixed_output
+
         #return None #Used to keep arm from moving during testing
-        for coord in fixed_output:
-            try:
-                self.arm.move_to(coord[0],coord[1],coord[2])
-            except:
-                pass
+
+        self.arm.continuous()
+        self.arm.create_route("TEST1",fixed_output)
+        # self.arm.create_route("TEST1",[[-2992, 0, 5500], [-2000,1800,5500]])
+        self.arm.run_route("TEST1")
+
         self.plan = []
 
     def convert_plan_type(self,plan):
