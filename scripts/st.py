@@ -8,6 +8,8 @@ import shlex
 #Robofourth manual
 #http://www.strobotics.com/manuals/manual15.htm
 
+
+
 # Use this one for PC
 DEFAULT_DEV = '/dev/ttyUSB0'
 DEFAULT_BAUD_RATE = 19200
@@ -49,6 +51,7 @@ START_HERE = 'START_HERE'
 SMOOTH = 'SMOOTH'
 ADJUST = 'ADJUST'
 NEW = 'NEW'
+INSERT = 'INSERT'
 
 OK = 'OK'
 
@@ -162,18 +165,33 @@ class StArm():
         self.cxn.write(cmd + CR)
         self.block_on_result(cmd)
 
+    '''
+    CARTESIAN NEW ROUTE hat 4 RESERVE hat hat LEARN DECIMAL CF 
+    hat 1 INSERT DECIMAL CF xxxhat 1 INSERT DECIMAL CF xxx hat 1 INSERT DECIMAL CF xxx 
+    DECIMAL 0 0 900 400 10 20 hat 1 LINE DLD xxx 
+    DECIMAL 0 0 900 200 20 200 hat 2 LINE DLD xxx 
+    DECIMAL 0 0 900 100 30 300 hat 3 LINE DLD xxx 
+    DECIMAL 0 0 900 20 100 100 hat 4 LINE DLD xxx
+    '''
+
     def create_route(self, route_name, commands):
         # commands should be a list [[x,y,z],[x,y,z],...]
-        cmd = CONTINUOUS + ' ' + ADJUST + ' ' + NEW + ' ' + ROUTE + ' ' + route_name
+        setup = '  ' + CARTESIAN + ' ' + NEW + ' ' + ROUTE + ' ' + route_name
 
         print "Creating route " + route_name
-        # cmd = str(len(commands)) + ' ' + RESERVE
+        reserve_mem = str(len(commands)) + ' ' + RESERVE + ' ' + route_name
+        learn = route_name + ' ' + LEARN + DECIMAL + ' CF'
+
+        other = route_name + '1 INSERT DECIMAL CF xxx' + route_name + ' 1 INSERT DECIMAL CF xxx ' + route_name + ' 1 INSERT DECIMAL CF xxx'
+
+        cmd = setup + ' ' + reserve_mem + ' ' + learn
+
         index = 0
         for point in commands:
             index += 1
             point = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2])
             print "Adding point " + point
-            cmd += ' ' + route_name + ' ' + str(index) + ' ' + point + IMPERATIVE
+            cmd += ' ' + DECIMAL + " 0 0 900 " + point +  ' ' + route_name + ' ' + str(index) + ' LINE DLD xxx' 
 
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
