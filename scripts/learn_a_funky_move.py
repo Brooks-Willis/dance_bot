@@ -56,19 +56,26 @@ def save_dmps(dmp_list, filepath):
 
 if __name__=="__main__":
     # get example path
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 4 or len(sys.argv) == 5:
         filepath = sys.argv[1]
+        K = int(sys.argv[2])
+        num_bases = int(sys.argv[3])
+        if len(sys.argv) == 5:
+            output_file = sys.argv[4]
+        else:
+            output_file = filepath[:-4]+".json"
     else:
-        print "Usage is rosrun dance_bot learn_dmp.py [filepath.csv]"
+        print "Usage is rosrun dance_bot learn_dmp.py filepath.csv K num_bases [output path.json]"
+        print "a reasonable starting point for K is 100"
+        print "num_bases should vary between 1 and 100"
         sys.exit(0)
     path = LoadedPath(filepath)
     dims = 3
-    K = 100
     D = 2.0 * np.sqrt(K)
-    num_bases = 50
 
     # LearnDMPFromDemo
     resp = makeLFDRequest(dims, path.hand_path, path.times, K, D, num_bases)
 
     # Store DMP
-    save_dmps(resp,filepath[:-4]+".json")
+
+    save_dmps(resp,output_file)

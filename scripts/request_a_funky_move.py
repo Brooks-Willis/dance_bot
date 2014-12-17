@@ -9,7 +9,15 @@ if __name__=="__main__":
     request_publisher = rospy.Publisher("plan_request", PlanRequest)
     print request_publisher
 
-    request = PlanRequest(dmp_name='test1', start_pos=[0,0,7500], start_vel=[0,0,0], goal=[-1500,-500,-2500])
+    request = PlanRequest(dmp_name='test1_500_1',
+                          start_pos=[0,0,7500],
+                          start_vel=[0,0,0],
+                          goal=[400,-800,5000])
+
+    # request = PlanRequest(dmp_name='test1_500_1',
+    #                       start_pos=[-1500,0,-2000],
+    #                       start_vel=[0,0,0],
+    #                       goal=[-1300,-400,-2500])
     print request
     time.sleep(1)
     request_publisher.publish(request)

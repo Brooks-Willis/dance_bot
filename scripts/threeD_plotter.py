@@ -18,9 +18,6 @@ class ArmCommands:
         self.plan = self.convert_plan_type(plan)
         fixed_output = self.plan_check()
         print "Checked output:", fixed_output
-        [xs, ys, zs]=[list(b) for b in zip(*self.plan)]
-        length = len(xs)
-        self.ax.scatter(xs[:length], ys[:length], zs[:length], c=np.arange(length))
 
     def convert_plan_type(self,plan):
         return [[p.x, p.y, p.z] for p in plan.path]
@@ -44,7 +41,7 @@ class ArmCommands:
                 print "Too close - new coord:", coord
             
             if self.norm(coord) > 7500:
-                error = 7500/norm(coord)
+                error = 7500/self.norm(coord)
                 for i in range(len(coord)):
                     coord[i]=math.trunc(coord[i]*error)
                 print "Too far - new coord:", coord
@@ -54,10 +51,14 @@ class ArmCommands:
     def execute(self):
         r = rospy.Rate(1)
         while not(rospy.is_shutdown()):
-            print "hello"
             if self.plan:
-                print "here I am!"
+                [xs, ys, zs]=[list(b) for b in zip(*self.plan)]
+                self.plan = []
+                length = len(xs)
+                self.ax.scatter(xs[:length], ys[:length], zs[:length], c=np.arange(length))
                 plt.show()
+                self.fig = plt.figure()
+                self.ax = self.fig.add_subplot(111, projection='3d')
             r.sleep()
 
 if __name__ == "__main__":
