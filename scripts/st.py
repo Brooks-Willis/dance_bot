@@ -208,6 +208,7 @@ class StArm():
         # save space
         for x in range(0,len(commands)):
             cmd = route_name + ' 1 INSERT DECIMAL CF'
+            
             self.cxn.flushInput()
             self.cxn.write(cmd + CR)
             self.block_on_result(cmd, debug)
@@ -320,7 +321,8 @@ class StArm():
 
     def run_route(self, route):
         # route is string name of learned path
-        cmd = SMOOTH + ' ' + route + ' ' + RUN
+        # cmd = SMOOTH + ' ' + route + ' ' + RUN
+        cmd = route + ' ' + RUN
         print('Running route %s' % route)
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
@@ -412,12 +414,13 @@ class StArm():
         self.block_on_result(cmd)
 
     def where(self):
+        return 'Fix me when you have time'
         cmd = WHERE
-
+        print cmd
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
-        res = str(self.block_on_result(cmd))
-        #res = self.cxn.readline()
+        #res = self.block_on_result(cmd)
+        res = self.cxn.readline()
         #TODO
         #Rewrite this method to use block_on_result
         try:
@@ -435,7 +438,7 @@ class StArm():
 
             lines = res.split('\r\n')
             #TODO: Need to account for possibility that arm is in decimal mode
-            print 'lines = ', lines                #I added this to see what res was reading.
+            #print 'lines = ', lines                #I added this to see what res was reading.
             cp = [int(x.strip().replace('.', '')) for x in shlex.split(lines[2])]
             pp = []
             for x in shlex.split(lines[3]):
