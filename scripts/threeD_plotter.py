@@ -38,7 +38,7 @@ class ArmCommands:
                 coord[2] = 0
             
             if self.norm(coord) < 3000:
-                error = 3000/norm(coord)
+                error = 3000/self.norm(coord)
                 for i in range(len(coord)):
                     coord[i]=int(math.ceil(coord[i]*error))
                 print "Too close - new coord:", coord
