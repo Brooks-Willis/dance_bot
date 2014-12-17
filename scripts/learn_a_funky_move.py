@@ -56,16 +56,17 @@ def save_dmps(dmp_list, filepath):
 
 if __name__=="__main__":
     # get example path
-    if len(sys.argv) == 4 or len(sys.argv) == 5:
+    if len(sys.argv) >= 4 and sys.argv[3][:2] != "__":
         filepath = sys.argv[1]
         K = int(sys.argv[2])
         num_bases = int(sys.argv[3])
-        if len(sys.argv) == 5:
+        if len(sys.argv) >= 5 and sys.argv[4][:2] != "__":
             output_file = sys.argv[4]
         else:
             output_file = filepath[:-4]+".json"
     else:
-        print "Usage is rosrun dance_bot learn_dmp.py filepath.csv K num_bases [output path.json]"
+        print sys.argv
+        print "Usage is rosrun dance_bot learn_a_funky_move.py filepath.csv K num_bases [output path.json]"
         print "a reasonable starting point for K is 100"
         print "num_bases should vary between 1 and 100"
         sys.exit(0)
