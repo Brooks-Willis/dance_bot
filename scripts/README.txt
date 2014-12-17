@@ -8,10 +8,12 @@ rostopic pub /kill_sig std_msgs/String "stop!"
 
 ---
 
-Then, run the dmp server and then learn_a_funky_move.py with the path specified above and a value of K (one of the gains) and num_bases (number of basis functions)
+Then, run the dmp server and then learn_a_funky_move.py. Pass in the name of the funky move to learn and a value of K (one of the gains) and num_bases (number of basis functions) from the command line after running the node to learn and save DMPs.
 
 roslaunch dmp dmp.launch
-rosrun dance_bot learn_a_funky_move.py /home/rboy/catkin_ws/src/dance_bot/path_data/test1.csv 500 5
+rosrun dance_bot learn_a_funky_move.py [path to dance_bot]/path_data
+OR 
+roslaunch dance_bot learn.launch
 
 ---
 
@@ -20,6 +22,8 @@ To actually run the arm, run arm_node.py and plan_a_funky_move.py (with the arm 
 roslaunch dmp dmp.launch
 rosrun dance_bot arm_node.py
 rosrun dance_bot plan_a_funky_move.py /home/rboy/catkin_ws/src/dance_bot/path_data
+OR
+roslaunch dance_bot run.launch
 
 rosrun dance_bot request_a_funky_move.py
 

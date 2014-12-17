@@ -63,6 +63,6 @@ class PathCompiler(object):
 if __name__ == "__main__":
     rospy.init_node('compile_path')
 
-    PathCompiler('/home/rboy/catkin_ws/src/dance_bot/test1.csv', 1)
+    PathCompiler('/home/rboy/catkin_ws/src/dance_bot/path_data/test2.csv', 1)
 
     rospy.spin()
