@@ -56,26 +56,61 @@ def save_dmps(dmp_list, filepath):
 
 if __name__=="__main__":
     # get example path
-    if len(sys.argv) == 4 or len(sys.argv) == 5:
-        filepath = sys.argv[1]
-        K = int(sys.argv[2])
-        num_bases = int(sys.argv[3])
-        if len(sys.argv) == 5:
-            output_file = sys.argv[4]
-        else:
-            output_file = filepath[:-4]+".json"
+    if len(sys.argv) >= 2 and sys.argv[1][:2] != "__":
+        folder_path = sys.argv[1]
     else:
-        print "Usage is rosrun dance_bot learn_dmp.py filepath.csv K num_bases [output path.json]"
-        print "a reasonable starting point for K is 100"
-        print "num_bases should vary between 1 and 100"
+        print sys.argv
+        print "Usage is rosrun dance_bot learn_a_funky_move.py folder_path"
         sys.exit(0)
-    path = LoadedPath(filepath)
-    dims = 3
-    D = 2.0 * np.sqrt(K)
 
-    # LearnDMPFromDemo
-    resp = makeLFDRequest(dims, path.hand_path, path.times, K, D, num_bases)
+    while not(rospy.is_shutdown()):
+        try:
+            params = input("enter: (name without file extension, K, num_bases, optionally output name)\n")
+        except:
+            e = sys.exc_info()
+            print e
+            continue
+        if len(params) == 3:
+            name, K, num_bases = params
+            output_name = name
+        elif len(params) == 4:
+            name, K, num_bases, output_name = params
+        else:
+            print "invalid input length, sorry"
+            continue
 
-    # Store DMP
+        if type(name) != str:
+            print "name must be a string"
+            continue
+        if type(K) != int:
+            print "K must be an integer"
+            continue
+        if type(num_bases) != int or num_bases < 1 or num_bases > 100:
+            print "num_bases must be an integer between 1 and 100"
+            continue
 
-    save_dmps(resp,output_file)
+        inputpath = folder_path+"/"+name+".csv"
+        try:
+            path = LoadedPath(inputpath)
+            print "read data from file", inputpath
+        except:
+            print "error loading file", inputpath
+            e = sys.exc_info()[0]
+            print e
+            continue
+
+        dims = 3
+        D = 2.0 * np.sqrt(K)
+
+        # LearnDMPFromDemo
+        resp = makeLFDRequest(dims, path.hand_path, path.times, K, D, num_bases)
+
+        # Store DMP
+        output_file = folder_path+"/"+output_name+".json"
+        try:
+            save_dmps(resp,output_file)
+            print "saved DMP to file", output_file
+        except:
+            print "error saving data to file", output_file
+            e = sys.exc_info()[0]
+            print e

@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find dmp)/launch/dmp.launch"/>
+    <node name="learner" pkg="dance_bot" type="learn_a_funky_move.py" args="$(find dance_bot)/path_data" output="screen"/>
+</launch>

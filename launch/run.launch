@@ -1,0 +1,5 @@
+<launch>
+    <include file="$(find dmp)/launch/dmp.launch"/>
+    <node name="arm" pkg="dance_bot" type="arm_node.py" output="screen"/>
+    <node name="planner" pkg="dance_bot" type="plan_a_funky_move.py" args="$(find dance_bot)/path_data" output="screen"/>
+</launch>

@@ -105,8 +105,10 @@ class StArm():
             try:
                 dev = port
                 self.cxn = s.Serial(dev, baudrate=baud, timeout=to)
+                print "I did it!", dev
                 break
             except:
+                print "I didn't do it!", port
                 pass
 
         # TODO

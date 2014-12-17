@@ -63,27 +63,6 @@ class PathCompiler(object):
 if __name__ == "__main__":
     rospy.init_node('compile_path')
 
-    # p_rad = 1.0
-
-    # p_coords = [[0,0,0],
-    #             [1,0,0],
-    #             [0,1,0],
-    #             [0,0,1],
-    #             [0,-1,0],
-    #             [.5,.5,.5]]
-
-    # for coord in p_coords:
-    #     print "Person: ", coord
-    #     print "Robot Arm: ", transform_coords(coord,p_rad)
-    #     print "\n"
-
-    # print "whole path:", transform_path(p_coords,p_rad)
-
-    path_comp = PathCompiler('/home/rboy/catkin_ws/src/dance_bot/test1.csv', 1)
-
-    # path = LoadedPath('/home/rboy/catkin_ws/src/dance_bot/test1.csv')
-    # print path.hand_path
-    # print path.elbow_path
-    # print path.times
+    PathCompiler('/home/rboy/catkin_ws/src/dance_bot/path_data/test2.csv', 1)
 
     rospy.spin()

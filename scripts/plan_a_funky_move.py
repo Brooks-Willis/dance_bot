@@ -104,7 +104,7 @@ class DMPPlanner(object):
         rospy.spin()
 
 if __name__=="__main__":
-    if len(sys.argv) == 2:
+    if len(sys.argv) >= 2 and sys.argv[1][:2] != "__":
         dmp_folder = sys.argv[1]
     else:
         print "usage is rosrun plan_a_funky_move.py dmp_folder_path"
