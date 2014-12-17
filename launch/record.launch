@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find ar_pose)/launch/ar_pose_dance_bot.launch"/>
+    <node name="save" pkg="dance_bot" type="transform_person_to_arm.py" args="$(find dance_bot)/path_data/" output="screen"/>
+</launch>
