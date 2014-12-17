@@ -105,7 +105,7 @@ if __name__ == '__main__':
     plan_publisher  = rospy.Publisher("plan", Path, queue_size=10)
     print plan_publisher
     #Create a DMP from a 3-D trajectory
-    error = 5 #Encoder tics
+    error = 100 #Encoder tics
     dims = 3                
     dt = 0.2               
     K = 100                 
@@ -139,18 +139,18 @@ if __name__ == '__main__':
 
     out = [pnt.positions for pnt in plan.plan.points]
     print "DMP Output:", out
-    
+    print "Length",len(out)
     #Check for goal proximity, cut off path when within error.
     for i in range(len(out)): 
         if near_goal(goal, out[i], error):
             print "I made it!" 
             print "index", i
             print "point", out[i]
-            out = out[:i]
-            out.append[goal]
+            cropped_out = out[:i]
+            out.append([int(goal[0]),int(goal[1]),int(goal[2])])
             break
-
-    path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in out]
+    print "New length", len(cropped_out)
+    path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in cropped_out]
     print path
 #    plan_publisher.publish(Path(path=path))
     print "published"

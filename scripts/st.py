@@ -33,6 +33,9 @@ ACCEL = 'ACCEL'
 MOVETO = 'MOVETO'
 HAND = 'HAND'
 WRIST = 'WRIST'
+ELBOW = 'ELBOW'
+SHOULDER = 'SHOULDER'
+WAIST = 'WAIST'
 ENERGIZE = 'ENERGIZE'
 DE_ENERGIZE = 'DE-ENERGIZE'
 QUERY = ' ?'
@@ -325,6 +328,30 @@ class StArm():
 
     def rotate_hand(self, pitch):
         cmd = TELL + ' ' + HAND + ' ' + str(pitch) + ' ' + MOVETO
+        print('Rotating hand to %s.' % pitch)
+        self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+        self.where()
+
+    def rotate_elbow(self, pitch):
+        cmd = TELL + ' ' + ELBOW + ' ' + str(pitch) + ' ' + MOVETO
+        print('Rotating hand to %s.' % pitch)
+        self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+        self.where()
+
+    def rotate_shoulder(self, pitch):
+        cmd = TELL + ' ' + SHOULDER + ' ' + str(pitch) + ' ' + MOVETO
+        print('Rotating hand to %s.' % pitch)
+        self.cxn.flushInput()
+        self.cxn.write(cmd + CR)
+        self.block_on_result(cmd)
+        self.where()
+
+    def rotate_waist(self, pitch):
+        cmd = TELL + ' ' + WAIST + ' ' + str(pitch) + ' ' + MOVETO
         print('Rotating hand to %s.' % pitch)
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
