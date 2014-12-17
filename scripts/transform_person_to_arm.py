@@ -20,6 +20,7 @@ class PathCompiler(object):
         rospy.init_node('compile_path')
         self.nums = [hand_num, elbow_num, shoulder_num]
         self.arm_radius = arm_radius
+        self.time_offset = False
 
         self.sub = rospy.Subscriber('ar_pose_marker',ARMarkers,self.got_markers)
         self.sub = rospy.Subscriber('kill_sig',String,self.kill_sig)
@@ -36,10 +37,12 @@ class PathCompiler(object):
     def got_markers(self, data):
         found_poses = {}
         for marker in data.markers:
+            if not self.time_offset:
+                self.time_offset = marker.header.stamp.to_sec()
             x = marker.pose.pose.position.x
             y = marker.pose.pose.position.y
             z = marker.pose.pose.position.z
-            time = marker.header.stamp
+            time = marker.header.stamp.to_sec() - self.time_offset
             if marker.id in self.nums:
                 found_poses[marker.id] = [x,y,z]
 
@@ -55,14 +58,6 @@ class PathCompiler(object):
 
     def kill_sig(self,data):
         self.outfile.close()
-
-class LoadedPath(object):
-
-    def __init__(self, filepath):
-        data = pandas.read_csv(filepath)
-        self.hand_path = zip(data['hand_x'],data['hand_y'],data['hand_z'])
-        self.elbow_path = zip(data['elbow_x'],data['elbow_y'],data['elbow_z'])
-        self.times = list(data['times'].values)
 
 
 if __name__ == "__main__":
@@ -84,7 +79,7 @@ if __name__ == "__main__":
 
     # print "whole path:", transform_path(p_coords,p_rad)
 
-    path_comp = PathCompiler('/home/rboy/catkin_ws/src/dance_bot/out2.csv', 1)
+    path_comp = PathCompiler('/home/rboy/catkin_ws/src/dance_bot/test1.csv', 1)
 
     # path = LoadedPath('/home/rboy/catkin_ws/src/dance_bot/test1.csv')
     # print path.hand_path

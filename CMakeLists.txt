@@ -54,6 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
    ArmPath.msg
    ARMarker.msg
    ARMarkers.msg
+   PlanRequest.msg
  )
 
 ## Generate services in the 'srv' folder
