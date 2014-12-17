@@ -95,10 +95,8 @@ class DMPPlanner(object):
             point.positions = [int(val) for val in point.positions]
 
         out = [pnt.positions for pnt in plan.plan.points]
-        path = [ArmPos(x=out[i][0], y=out[i][1], z=out[i][2]) for i in range(len(out)) if i%2==0]
+        path = [ArmPos(x=out[i][0], y=out[i][1], z=out[i][2]) for i in range(len(out)) if i%6 ==0]
         return Path(path=path[:13])
-
-    
 
     def execute(self):
         rospy.spin()
