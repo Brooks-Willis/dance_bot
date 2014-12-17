@@ -169,36 +169,64 @@ class StArm():
         self.block_on_result(cmd)
 
     '''
-    CARTESIAN NEW ROUTE hat 4 RESERVE hat hat LEARN DECIMAL CF 
-    hat 1 INSERT DECIMAL CF xxxhat 1 INSERT DECIMAL CF xxx hat 1 INSERT DECIMAL CF xxx 
-    DECIMAL 0 0 900 400 10 20 hat 1 LINE DLD xxx 
-    DECIMAL 0 0 900 200 20 200 hat 2 LINE DLD xxx 
-    DECIMAL 0 0 900 100 30 300 hat 3 LINE DLD xxx 
-    DECIMAL 0 0 900 20 100 100 hat 4 LINE DLD xxx
+    CARTESIAN NEW ROUTE hat 4 RESERVE hat hat LEARN DECIMAL CF
+    hat 1 INSERT DECIMAL CF 
+    hat 1 INSERT DECIMAL CF 
+    hat 1 INSERT DECIMAL CF
+    DECIMAL 0 0 900 400 10 20 hat 1 LINE DLD
+    DECIMAL 0 0 900 200 20 200 hat 2 LINE DLD
+    DECIMAL 0 0 900 100 30 300 hat 3 LINE DLD 
+    DECIMAL 0 0 900 20 100 100 hat 4 LINE DLD
     '''
 
-    def create_route(self, route_name, commands):
-        # commands should be a list [[x,y,z],[x,y,z],...]
-        setup = '  ' + CARTESIAN + ' ' + NEW + ' ' + ROUTE + ' ' + route_name
+    def create_route(self, route_name, commands, debug = False):
+        '''
+        Commands should be a list of lists [[x,y,z],[x,y,z],...]
+        Lists must be [x,y,z] to use default pitch, yaw, roll or [x,y,z,pitch,yaw,roll] to specify
+
+        Output format for one point:
+            CARTESIAN NEW ROUTE route_name 4 RESERVE route_name route_name LEARN DECIMAL CF
+            route_name 1 INSERT DECIMAL CF             
+            DECIMAL roll yaw pitch z y x route_name 1 LINE DLD
+        '''
+
+        # Initiaze in Cartesian mode and declare new route
+        cmd = '  ' + CARTESIAN + ' ' + NEW + ' ' + ROUTE + ' ' + route_name
+
+
+        # Reserve correct ammount of memory since default is 20
+        cmd += ' ' + str(len(commands)) + ' ' + RESERVE + ' ' + route_name
+        # Put arm in Learning mode
+        cmd += ' ' +route_name + ' ' + LEARN + ' ' + DECIMAL + ' CF'
 
         print "Creating route " + route_name
-        reserve_mem = str(len(commands)) + ' ' + RESERVE + ' ' + route_name
-        learn = route_name + ' ' + LEARN + DECIMAL + ' CF'
-
-        other = route_name + '1 INSERT DECIMAL CF xxx' + route_name + ' 1 INSERT DECIMAL CF xxx ' + route_name + ' 1 INSERT DECIMAL CF xxx'
-
-        cmd = setup + ' ' + reserve_mem + ' ' + learn
-
-        index = 0
-        for point in commands:
-            index += 1
-            point = str(point[0]) + ' ' + str(point[1]) + ' ' + str(point[2])
-            print "Adding point " + point
-            cmd += ' ' + DECIMAL + " 0 0 900 " + point +  ' ' + route_name + ' ' + str(index) + ' LINE DLD xxx' 
 
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
-        self.block_on_result(cmd)
+        self.block_on_result(cmd, debug)
+
+        # save space
+        for x in range(0,len(commands)):
+            cmd = route_name + ' 1 INSERT DECIMAL CF'
+            self.cxn.flushInput()
+            self.cxn.write(cmd + CR)
+            self.block_on_result(cmd, debug)
+        
+        index = 0
+        for point in commands:
+            index += 1
+            point = str(point[2]) + ' ' + str(point[1]) + ' ' + str(point[0])
+
+            if len(point) == 6:
+                euler_angles = str(point[5]) + ' ' + str(point[4]) + ' ' + str(point[3])
+            else:
+                euler_angles = '0 0 0'
+
+            cmd = DECIMAL + ' ' + euler_angles + ' ' + point +  ' ' + route_name + ' ' + str(index) + ' LINE DLD'
+            print "Adding [" + point + ' ' + euler_angles + "] to route"
+            self.cxn.flushInput()
+            self.cxn.write(cmd + CR)
+            self.block_on_result(cmd, debug)
 
     def calibrate(self):
         cmd = CALIBRATE
@@ -235,7 +263,8 @@ class StArm():
             try:
                 res = re.search('>', s).group(0)
                 if res == '>':
-                    print('Command ' + cmd + ' completed without ' +
+                    if debug:
+                        print('Command ' + cmd + ' completed without ' +
                           'verification of success.')
                     return
                 else:
@@ -268,12 +297,11 @@ class StArm():
         self.block_on_result(cmd)
 
     def set_point(self, name):
-        cmd = "POINT "+name
+        cmd = "POINT " + name
         print('Getting current point')
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
         self.block_on_result(cmd)
-
 
     def get_accel(self):
         cmd = ACCEL + QUERY
@@ -384,13 +412,12 @@ class StArm():
         self.block_on_result(cmd)
 
     def where(self):
-        return 'Fix me when you have time'
         cmd = WHERE
-        print cmd
+
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)
-        #res = self.block_on_result(cmd)
-        res = self.cxn.readline()
+        res = str(self.block_on_result(cmd))
+        #res = self.cxn.readline()
         #TODO
         #Rewrite this method to use block_on_result
         try:
@@ -408,7 +435,7 @@ class StArm():
 
             lines = res.split('\r\n')
             #TODO: Need to account for possibility that arm is in decimal mode
-            #print 'lines = ', lines                #I added this to see what res was reading.
+            print 'lines = ', lines                #I added this to see what res was reading.
             cp = [int(x.strip().replace('.', '')) for x in shlex.split(lines[2])]
             pp = []
             for x in shlex.split(lines[3]):
