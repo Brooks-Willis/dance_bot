@@ -5,11 +5,13 @@ import rospy
 import math
 import st
 import numpy as np
+import cv2
 
 class ArmCommands:
     def __init__(self):
         self.dmp_plan = rospy.Subscriber("plan", Path, self.run_arm)
         self.plan = []
+        self.distance = 0.0
         try:
             self.arm = st.StArm()
             self.arm.start()
@@ -18,12 +20,18 @@ class ArmCommands:
             self.arm.home()
         except:
             print "Arm not connected"
+        cv2.namedWindow('UI')
+        cv2.createTrackbar('distance', 'UI', 100, 400, self.set_target_distance)
+
+    def set_target_distance(self,new_distance):
+        """ call back function for the OpenCv Slider to set the target distance """
+        self.distance = new_distance
 
     def run_arm(self,plan): 
         self.plan = self.convert_plan_type(plan)
-        fixed_output = self.plan_check()
+        self.safe_output = self.plan_check()
+        fixed_output = self.distance_check(distance)
         print "Checked output:", fixed_output
-        #return None #Used to keep arm from moving during testing
         for coord in fixed_output:
             try:
                 self.arm.move_to(coord[0],coord[1],coord[2])
@@ -34,10 +42,22 @@ class ArmCommands:
     def convert_plan_type(self,plan):
         return [[p.x, p.y, p.z] for p in plan.path]
 
-    """def norm(self, coord):
-        norm_val = math.sqrt(coord[0]**2+coord[1]**2+coord[2]**2)
-        #print "Norm:", norm_val
-        return norm_val"""
+    def safe_dist(new_point, prior_point, distance):
+        dx = abs(new_point[0]-prior_point[0])
+        dy = abs(new_point[1]-prior_point[1])
+        dz = abs(new_point[2]-prior_point[2])
+        variance = [dx, dy, dz]
+        print "variance:", variance
+        if np.linalg.norm(variance) > distance:
+            return True
+        else:
+            return False
+
+    def distance_check(self,distance):
+        spaced_points = [self.safe_output[0]]
+        for point in self.safe_output[1:]:
+            if self.safe_dist(point, spaced_points[-1], distance):
+                spaced_points.append(point)
 
     def plan_check(self):
         new_plan = []
@@ -63,4 +83,8 @@ class ArmCommands:
 if __name__ == "__main__":
     rospy.init_node('robot_arm', anonymous=True)
     object_tracker = ArmCommands()
-    rospy.spin()
+    r = rospy.Rate(10)
+    while not(rospy.is_shutdown()):
+        #if distance_to_wall != -1:
+        cv2.waitKey(10)
+        r.sleep()
