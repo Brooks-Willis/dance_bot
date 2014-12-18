@@ -62,7 +62,10 @@ class DMPPlanner(object):
         # load DMP
         print "loading dmp"
         dmp_name = request.dmp_name
-        dmps = LoadedDMP(self.dmp_folder+"/"+dmp_name+".json") #not other OS compatible, but neither is ROS, so whatevs
+        try:
+            dmps = LoadedDMP(self.dmp_folder+"/"+dmp_name+".json") #not other OS compatible, but neither is ROS, so whatevs
+        except:
+            return
         
         # SetActiveDMP
         print "setting active dmp"

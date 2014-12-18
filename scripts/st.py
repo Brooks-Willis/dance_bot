@@ -329,9 +329,9 @@ class StArm():
 
     def run_route(self, route):
         # route is string name of learned path
-        # cmd = SMOOTH + ' ' + route + ' ' + RUN
-        self.set_accel(6000)
-        cmd = route + ' ' + RUN
+        cmd = SMOOTH + ' ' + route + ' ' + RUN
+        # self.set_accel(6000)
+        # cmd = route + ' ' + RUN
         print('Running route %s' % route)
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)

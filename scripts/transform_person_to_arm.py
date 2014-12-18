@@ -5,6 +5,7 @@ from std_msgs.msg import String
 import numpy as np
 import csv
 import pandas
+import sys
 
 def transform_coords(person_coord, p_rad):
     p_x, p_y, p_z = person_coord
@@ -34,7 +35,11 @@ class PathCompiler(object):
         
         self.writer.writerow(headers)
 
+        self.shutdown = False
+
     def got_markers(self, data):
+        if self.shutdown:
+            return
         found_poses = {}
         for marker in data.markers:
             if not self.time_offset:
@@ -58,11 +63,33 @@ class PathCompiler(object):
 
     def kill_sig(self,data):
         self.outfile.close()
+        self.shutdown = True
+
+    def execute(self):
+        r = rospy.Rate(1)
+        while not self.shutdown:
+            r.sleep()
 
 
 if __name__ == "__main__":
+
+    if len(sys.argv) >= 2 and sys.argv[1][:2] != "__":
+        folder = sys.argv[1]
+    else:
+        print "first argument should be the folder path to save in (with a slash on the end)"
+        sys.exit(0)
+
     rospy.init_node('compile_path')
 
-    PathCompiler('/home/rboy/catkin_ws/src/dance_bot/path_data/test2.csv', 1)
+    r = rospy.Rate(.2)
+    r.sleep()
+    while not(rospy.is_shutdown()):
+
+        filename = raw_input("Enter the name of the file you want to save (eg test1) and press \
+enter to begin recording. Either send a string (std_msgs/String) to the topic \
+kill_sig or use Ctrl-C to stop recording\n")
+
+        compiler = PathCompiler(folder+filename+'.csv', 1)
+        compiler.execute()
 
     rospy.spin()
