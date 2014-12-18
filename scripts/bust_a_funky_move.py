@@ -7,7 +7,7 @@ import st
 import numpy as np
 import cv2
 
-class ArmCommands:
+class ArmCommands(object):
     def __init__(self):
         self.dmp_plan = rospy.Subscriber("plan", Path, self.run_arm)
         self.plan = []
@@ -20,8 +20,9 @@ class ArmCommands:
             self.arm.home()
         except:
             print "Arm not connected"
+        self.distance=100
         cv2.namedWindow('UI')
-        cv2.createTrackbar('distance', 'UI', 100, 400, self.set_target_distance)
+        cv2.createTrackbar('distance', 'UI', self.distance, 400, self.set_target_distance)
 
     def set_target_distance(self,new_distance):
         """ call back function for the OpenCv Slider to set the target distance """
@@ -42,7 +43,7 @@ class ArmCommands:
     def convert_plan_type(self,plan):
         return [[p.x, p.y, p.z] for p in plan.path]
 
-    def safe_dist(new_point, prior_point, distance):
+    def safe_dist(self,new_point, prior_point, distance):
         dx = abs(new_point[0]-prior_point[0])
         dy = abs(new_point[1]-prior_point[1])
         dz = abs(new_point[2]-prior_point[2])
@@ -58,6 +59,7 @@ class ArmCommands:
         for point in self.safe_output[1:]:
             if self.safe_dist(point, spaced_points[-1], distance):
                 spaced_points.append(point)
+        return spaced_points
 
     def plan_check(self):
         new_plan = []

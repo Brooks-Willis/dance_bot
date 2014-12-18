@@ -1,6 +1,6 @@
 <launch>
     <include file="$(find dmp)/launch/dmp.launch"/>
-    <node name="viz" pkg="dance_bot" type="threeD_plotter.py"/>
+    <node name="viz" pkg="dance_bot" type="see_a_funky_move.py"/>
     <node name="planner" pkg="dance_bot" type="plan_a_funky_move.py" args="$(find dance_bot)/path_data"/>
     <node name="requester" pkg="dance_bot" type="request_a_funky_move.py" output="screen"/>
 </launch>
