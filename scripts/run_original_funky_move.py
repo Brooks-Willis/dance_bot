@@ -41,7 +41,7 @@ class OriginalPlanner(object):
 
 if __name__=="__main__":
     if len(sys.argv) == 2:
-        dmp_folder = sys.argv[1]
+        original_folder = sys.argv[1]
     else:
         print "usage is rosrun plan_a_funky_move.py original_folder_path"
         print "using /home/rboy/catkin_ws/src/dance_bot as default folder"

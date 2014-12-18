@@ -62,7 +62,10 @@ class DMPPlanner(object):
         # load DMP
         print "loading dmp"
         dmp_name = request.dmp_name
-        dmps = LoadedDMP(self.dmp_folder+"/"+dmp_name+".json") #not other OS compatible, but neither is ROS, so whatevs
+        try:
+            dmps = LoadedDMP(self.dmp_folder+"/"+dmp_name+".json") #not other OS compatible, but neither is ROS, so whatevs
+        except:
+            return
         
         # SetActiveDMP
         print "setting active dmp"
@@ -87,6 +90,7 @@ class DMPPlanner(object):
 
         # publish plan
         print "publishing"
+
         self.plan_publisher.publish(path)
 
     def makePath(self,plan):
@@ -94,10 +98,8 @@ class DMPPlanner(object):
             point.positions = [int(val) for val in point.positions]
 
         out = [pnt.positions for pnt in plan.plan.points]
-        path = [ArmPos(x=p[0], y=p[1], z=p[2]) for p in out]
+        path = [ArmPos(x=out[i][0], y=out[i][1], z=out[i][2]) for i in range(len(out))]
         return Path(path=path)
-
-    
 
     def execute(self):
         rospy.spin()

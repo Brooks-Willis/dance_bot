@@ -122,10 +122,10 @@ if __name__ == '__main__':
     makeSetActiveRequest(resp.dmp_list)
 
     #Now, generate a plan
-    x_0 = [-3000.0,0.0,5500.0]          #Plan starting at a different point than demo 
+    x_0 = [-5000.0,0.0,3000.0]          #Plan starting at a different point than demo 
     x_dot_0 = [0.0,0.0,0.0]   
     t_0 = 0                
-    goal = [3000.0, 0.0, 5500.0]         #Plan to a different goal than demo
+    goal = [5000.0, 0.0, 3000.0]         #Plan to a different goal than demo
     goal_thresh = [0.2,0.2,0.2]
     seg_length = -1          #Plan until convergence to goal
     tau = resp.tau       #Desired plan should take twice as long as dsemo

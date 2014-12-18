@@ -16,7 +16,6 @@ class ArmCommands(object):
             self.arm = st.StArm()
             self.arm.start()
             self.arm.calibrate()
-            self.arm.cartesian()
             self.arm.home()
         except:
             print "Arm not connected"
@@ -28,14 +27,17 @@ class ArmCommands(object):
         """ call back function for the OpenCv Slider to set the target distance """
         self.distance = new_distance
 
-    def run_arm(self,plan): 
+    def run_arm(self,plan):
         self.plan = self.convert_plan_type(plan)
         self.safe_output = self.plan_check()
-        fixed_output = self.distance_check(distance)
+        fixed_output = self.distance_check(self.distance)
         print "Checked output:", fixed_output
         for coord in fixed_output:
             try:
-                self.arm.move_to(coord[0],coord[1],coord[2])
+                self.arm.continuous()
+                self.arm.create_route("TEST1",fixed_output)
+                # self.arm.create_route("TEST1",[[-2992, 0, 5500], [-2000,1800,5500]])
+                self.arm.run_route("TEST1")
             except:
                 pass
         self.plan = []

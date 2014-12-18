@@ -8,7 +8,12 @@ import shlex
 #Robofourth manual
 #http://www.strobotics.com/manuals/manual15.htm
 
-
+'''
+Speed may be changed during the progress of a route with 'LEARN e.g. 'LEARN SPEED 7500 (or other value or other variable) 
+Associated commands are: 
+(line number) 'REPLACE SPEED (new value)
+(line number) 'INSERT SPEED (new value) 
+'''
 
 # Use this one for PC
 DEFAULT_DEV = '/dev/ttyUSB0'
@@ -226,6 +231,7 @@ class StArm():
                 euler_angles = '0 0 0'
 
             cmd = DECIMAL + ' ' + euler_angles + ' ' + point +  ' ' + route_name + ' ' + str(index) + ' LINE DLD'
+            print cmd
             print "Adding [" + point + ' ' + euler_angles + "] to route"
             self.cxn.flushInput()
             self.cxn.write(cmd + CR)
@@ -323,8 +329,9 @@ class StArm():
 
     def run_route(self, route):
         # route is string name of learned path
-        # cmd = SMOOTH + ' ' + route + ' ' + RUN
-        cmd = route + ' ' + RUN
+        cmd = SMOOTH + ' ' + route + ' ' + RUN
+        # self.set_accel(6000)
+        # cmd = route + ' ' + RUN
         print('Running route %s' % route)
         self.cxn.flushInput()
         self.cxn.write(cmd + CR)

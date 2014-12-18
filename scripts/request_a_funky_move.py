@@ -11,7 +11,7 @@ if __name__=="__main__":
 
     while not(rospy.is_shutdown()):
     
-        dmp_name = input('Which dmp do you want to learn? (eg "test1")\n')
+        dmp_name = raw_input('Which dmp do you want to learn? (eg test1)\n')
         start_pos = input('Where do you want to start? (eg [0,0,7500])\n')
         goal = input('Where do you want to end? (eg [400,-800,5000])\n')
 
