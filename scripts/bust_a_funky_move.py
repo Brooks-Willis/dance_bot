@@ -30,7 +30,7 @@ class ArmCommands(object):
     def run_arm(self,plan):
         self.plan = self.convert_plan_type(plan)
         self.safe_output = self.plan_check()
-        fixed_output = self.distance_check(distance)
+        fixed_output = self.distance_check(self.distance)
         print "Checked output:", fixed_output
         for coord in fixed_output:
             try:

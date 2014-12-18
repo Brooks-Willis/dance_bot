@@ -81,7 +81,7 @@ class DMPPlanner(object):
         goal_thresh = [1,1,1]
         tau = dmps.tau
         integrate_iter = 5
-        dt = .3
+        dt = .2
         plan = makePlanRequest(x_0, x_dot_0, t_0, goal, goal_thresh, 
                            seg_length, tau, dt, integrate_iter)
 
@@ -98,8 +98,8 @@ class DMPPlanner(object):
             point.positions = [int(val) for val in point.positions]
 
         out = [pnt.positions for pnt in plan.plan.points]
-        path = [ArmPos(x=out[i][0], y=out[i][1], z=out[i][2]) for i in range(len(out)) if i%6 ==0]
-        return Path(path=path[:13])
+        path = [ArmPos(x=out[i][0], y=out[i][1], z=out[i][2]) for i in range(len(out))]
+        return Path(path=path)
 
     def execute(self):
         rospy.spin()
